@@ -265,3 +265,35 @@ function wave_bases(mother,k,scale,param);
 
 end # of code
 
+function computeWaveletContourMatrix(time::Array{Float64,1}, signal::Array{Float64,1},dt::Float64, UInf::Float64,D::Float64 )
+	
+	pad = 1;
+	dj  = 0.2;
+	so = 2.0*dt;
+	j1 = -1;
+	lag1 = 0.72;
+	mother = "Morlet";
+	
+	wave, period, scale, coi = wavelet(signal, dt, pad, dj,so, j1,mother);
+	
+	power = (abs.(wave)).^2;
+
+	nx = length(signal);
+	ny = length(period);
+
+	tc = zeros(Float64,ny,nx);
+	yc = zeros(Float64,ny,nx);
+
+	for j = 1:ny
+		tc[j,1:end] = time*UInf/D;
+	end
+
+	for j =1:nx
+		for k = 1:ny
+			yc[k,j] = 1.0/period[k];
+		end
+	end
+
+	return tc, yc, power ; 
+
+end
